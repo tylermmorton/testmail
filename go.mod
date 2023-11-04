@@ -1,4 +1,4 @@
-module github.com/tylermmorton/create-torque-app
+module github.com/tylermmorton/testmail
 
 go 1.20
 

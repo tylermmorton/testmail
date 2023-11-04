@@ -1,7 +1,7 @@
 package landing
 
 import (
-	"github.com/tylermmorton/create-torque-app/templates/html"
+	"github.com/tylermmorton/testmail/templates/html"
 	"github.com/tylermmorton/tmpl"
 	"github.com/tylermmorton/torque"
 	"net/http"

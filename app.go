@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"github.com/tylermmorton/create-torque-app/routes/landing"
+	"github.com/tylermmorton/testmail/routes/landing"
 	"github.com/tylermmorton/torque"
 	"io/fs"
 	"log"
