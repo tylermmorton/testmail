@@ -21,7 +21,7 @@ tasks:
   build:go:
     cmds:
       - go generate ./...
-      - go build -o .build/bin/$(basename $(pwd)) app.go
+      - go build -o .build/bin/$(basename $(pwd)) main.go
 
   build:image:
     cmds:
