@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>{{ .TitlePrefix }}{{ .Title }}{{ .TitleSuffix }}</title>
+  <head>
+    <title>{{ .TitlePrefix }}{{ .Title }}{{ .TitleSuffix }}</title>
 
     {{ range .Links }}
-        {{ template "link" . }}
+      {{ template "link" . }}
     {{ end }}
 
     {{ range .Scripts }}
-        {{ template "script" . }}
+      {{ template "script" . }}
     {{ end }}
-  
-  <style>
+
+
+    <style>
       html,
       body {
-          height: 100%;
+        height: 100%;
       }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
-{{ template "body" . }}
-</body>
+  <body>
+    {{ template "body" . }}
+  </body>
 </html>

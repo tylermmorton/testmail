@@ -41,7 +41,10 @@ func main() {
 	}(&wg)
 	wg.Add(1)
 
-	s := smtp.NewServer(smtpService)
+	s, err := smtp.NewServer(smtpService)
+	if err != nil {
+		log.Fatalf("failed to create smtp server: %+v", err)
+	}
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()
 		log.Printf("[smtp] Listening on http://localhost:1025")

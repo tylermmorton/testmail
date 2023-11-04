@@ -1,9 +1,10 @@
 package smtp
 
 import (
+	"context"
 	"github.com/emersion/go-smtp"
-	"io"
-	"os"
+	"github.com/tylermmorton/testmail/app/model"
+	"log"
 )
 
 type Service interface {
@@ -14,41 +15,32 @@ func New() Service {
 	return &baseLayer{}
 }
 
-func NewServer(svc Service) (s *smtp.Server) {
-	s = smtp.NewServer(svc)
-	s.Addr = ":1025"
-	s.Domain = "localhost"
-	s.AllowInsecureAuth = true
-	s.Debug = os.Stdout
-	return s
+type baseLayer struct {
 }
-
-type baseLayer struct{}
 
 func (l *baseLayer) NewSession(c *smtp.Conn) (smtp.Session, error) {
-	return &session{}, nil
+	ctx := context.Background()
+	ch := make(chan *model.Email)
+	go func(ctx context.Context) {
+		for {
+			select {
+			case email, ok := <-ch:
+				if !ok {
+					// channel closed
+					return
+				}
+				if email == nil {
+					continue
+				}
+
+				l.handleIncomingEmail(ctx, email)
+			}
+		}
+	}(ctx)
+
+	return &session{ctx: ctx, ch: ch}, nil
 }
 
-type session struct{}
-
-func (s *session) AuthPlain(username, password string) error {
-	return nil
-}
-
-func (s *session) Mail(from string, opts *smtp.MailOptions) error {
-	return nil
-}
-
-func (s *session) Rcpt(to string, opts *smtp.RcptOptions) error {
-	return nil
-}
-
-func (s *session) Data(r io.Reader) error {
-	return nil
-}
-
-func (s *session) Reset() {}
-
-func (s *session) Logout() error {
-	return nil
+func (l *baseLayer) handleIncomingEmail(ctx context.Context, email *model.Email) {
+	log.Printf("Received email: %+v\n", email)
 }
