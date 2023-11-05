@@ -9,7 +9,7 @@
 - [ ] go-rod integration for driving automated testing
 
 ## The Stack
-The `create-torque-app` template project is preconfigured with the following technologies:
+This project was generated from the `create-torque-app` template and is using the following technologies:
 - [torque](https://lbft.dev) - Webserver framework
 - [htmx](https://htmx.org/) - Frontend framework
 - [tmpl](https://github.com/tylermmorton/tmpl) - Go `html/template` compiler and renderer
