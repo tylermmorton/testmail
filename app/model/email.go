@@ -10,3 +10,11 @@ type Email struct {
 	Headers map[string]string `json:"headers" bson:"headers"`
 	Body    string            `json:"body" bson:"body"`
 }
+
+type FindEmailQuery struct {
+	ID string `json:"id,omitempty" bson:"_id,omitempty"`
+
+	To      string `json:"to,omitempty" bson:"to,omitempty"`
+	From    string `json:"from,omitempty" bson:"from,omitempty"`
+	Subject string `json:"subject,omitempty" bson:"subject,omitempty"`
+}

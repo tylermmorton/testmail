@@ -52,6 +52,7 @@ func (s *session) Data(r io.Reader) error {
 			return err
 		}
 		body = string(byt)
+		delete(headers, "Content-Transfer-Encoding")
 	}
 
 	email := model.Email{}

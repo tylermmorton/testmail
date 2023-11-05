@@ -1,14 +1,18 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"github.com/tylermmorton/testmail/app/routes/landing"
 	"github.com/tylermmorton/testmail/app/services/smtp"
 	"github.com/tylermmorton/torque"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"io/fs"
 	"log"
 	"net/http"
 	"sync"
+	"time"
 )
 
 //go install github.com/tylermmorton/tmpl/cmd/tmpl@latest
@@ -24,11 +28,20 @@ func main() {
 		log.Fatalf("failed to create static assets filesystem: %+v", err)
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		log.Fatalf("failed to connect to mongodb: %+v", err)
+	}
+
+	db := mongoClient.Database("testmail")
+
 	// create a shared smtp service between client and server
-	smtpService := smtp.New()
+	smtpService := smtp.New(db)
 
 	r := torque.NewRouter(
-		torque.WithRouteModule("/", &landing.RouteModule{}),
+		torque.WithRouteModule("/", &landing.RouteModule{SmtpService: smtpService}),
 		torque.WithFileSystemServer("/s", staticAssets),
 	)
 	go func(wg *sync.WaitGroup) {

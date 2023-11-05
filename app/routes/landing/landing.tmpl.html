@@ -1,3 +1,4 @@
+{{- /* gotype:github.com/tylermmorton/testmail/app/routes/landing.LandingPage */ -}}
 <div class="flex h-full w-full flex-row">
   <div class="flex w-1/3 flex-col space-y-4 bg-slate-50 p-8 shadow-md">
     <a href="/" class="text-3xl font-semibold text-black flex flex-row items-end space-x-1 hover:cursor-pointer w-fit p-1">
@@ -21,14 +22,22 @@
       />
     </form>
 
-    <nav>nav</nav>
+    <nav class="flex flex-col space-y-2">
+      {{ range .Emails }}
+          <a class="w-full flex text-semibold">
+            {{ .Subject }}
+          </a>
+      {{ end }}
+    </nav>
   </div>
 
   <main class="flex w-full items-center justify-center bg-slate-100 p-8">
     <div
       class="min-h-[60ch] w-full max-w-3xl rounded-lg bg-slate-50 shadow-xl"
     >
-      email content
+      {{ if ne .Current nil }}
+          {{ html .Current.Body }}
+      {{ end }}
     </div>
   </main>
 </div>
