@@ -1,29 +1,31 @@
 {{- /* gotype:github.com/tylermmorton/testmail/app/routes/inbox.EmailList*/ -}}
-{{ range .Emails }}
-  <div class="w-full rounded bg-white shadow-lg">
-    <a
-      href="/{{ hex .ID }}"
-      class="flex h-full cursor-pointer flex-row items-center space-x-4 rounded-md bg-gray-50 px-4 shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-black"
-    >
-      <div class="flex grow flex-col items-start p-3">
-        <div class="flex flex-row items-end space-x-1  text-sm">
-          <div class="shrink truncate font-semibold">
-            {{ .Subject }}
+<nav class="flex flex-col space-y-2 overflow-y-scroll pr-2 no-scrollbar">
+  {{ range .Emails }}
+    <div class="border-1 w-full border-gray-500 bg-white">
+      <a
+        href="/{{ hex .ID }}"
+        class="flex h-full cursor-pointer flex-row items-center space-x-4 rounded-md px-4 shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-black"
+      >
+        <div class="flex grow flex-col items-start p-3">
+          <div class="flex flex-row items-end space-x-1  text-sm">
+            <div class="shrink truncate font-semibold">
+              {{ .Subject }}
+            </div>
+            <span>&bull;</span>
+            <div class="text-gray-500">
+              {{ formatTimeSince .CreatedAt }}
+            </div>
           </div>
-          <span>&bull;</span>
-          <div class="text-slate-500">
-            {{ formatTimeSince .CreatedAt }}
+          <div class="truncate text-xs italic text-gray-700">
+            To
+            {{ join .To }}
+          </div>
+          <div class="truncate text-xs italic text-gray-700">
+            From
+            {{ .From }}
           </div>
         </div>
-        <div class="truncate text-xs italic text-slate-700">
-          To
-          {{ join .To }}
-        </div>
-        <div class="truncate text-xs italic text-slate-700">
-          From
-          {{ .From }}
-        </div>
-      </div>
-    </a>
-  </div>
-{{ end }}
+      </a>
+    </div>
+  {{ end }}
+</nav>
