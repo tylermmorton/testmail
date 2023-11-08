@@ -88,17 +88,8 @@ func (l *baseLayer) GetEmailByID(ctx context.Context, id string) (*model.Email, 
 
 func (l *baseLayer) FindEmails(ctx context.Context, q *model.FindEmailQuery) ([]*model.Email, error) {
 	opts := options.Find()
-	opts.SetLimit(100)
+	opts.SetLimit(q.Limit)
 	opts.SetSort(bson.D{{"createdAt", -1}})
-
-	filter := bson.D{}
-	if len(q.ID) > 0 {
-		oid, err := primitive.ObjectIDFromHex(q.ID)
-		if err != nil {
-			return nil, err
-		}
-		filter = append(filter, bson.E{Key: "_id", Value: oid})
-	}
 
 	cur, err := l.emails.Find(ctx, bson.D{}, opts)
 	if err != nil {

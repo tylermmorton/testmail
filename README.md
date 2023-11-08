@@ -6,7 +6,7 @@
 - [x] SMTP server that catches all emails and stores them in a mongodb collection
 - [ ] Web interface for viewing emails
 - [ ] Docker image for easy deployment
-- [ ] go-rod integration for driving automated testing
+- [ ] go-rod & cypress integrations for driving automated testing
 
 ## The Stack
 This project was generated from the `create-torque-app` template and is using the following technologies:

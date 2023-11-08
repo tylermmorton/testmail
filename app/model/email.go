@@ -12,7 +12,7 @@ type Email struct {
 }
 
 type FindEmailQuery struct {
-	ID string `json:"id,omitempty" bson:"_id,omitempty"`
+	Query `bson:",inline"`
 
 	To      string `json:"to,omitempty" bson:"to,omitempty"`
 	From    string `json:"from,omitempty" bson:"from,omitempty"`

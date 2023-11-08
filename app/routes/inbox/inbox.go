@@ -1,4 +1,4 @@
-package landing
+package inbox
 
 import (
 	"github.com/tylermmorton/testmail/app/model"
@@ -6,28 +6,36 @@ import (
 	"github.com/tylermmorton/testmail/app/templates/html"
 	"github.com/tylermmorton/tmpl"
 	"github.com/tylermmorton/torque"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
-// Template can be used to render the landing page.
+// Template can be used to render the inbox page.
 var Template = tmpl.MustCompile(
-	&LandingPage{},
+	&InboxPage{},
 	tmpl.UseFuncs(tmpl.FuncMap{
 		"html": func(v string) template.HTML {
 			return template.HTML(v)
 		},
+		"hex": func(id primitive.ObjectID) string {
+			return id.Hex()
+		},
+		"join": func(strs []string) string {
+			return strings.Join(strs, ", ")
+		},
+		"formatTimeSince": formatTimeSince,
 	}),
 )
 
-//tmpl:bind landing.tmpl.html
-type LandingPage struct {
+//tmpl:bind inbox.tmpl.html
+type InboxPage struct {
 	// Page is a template for a base html page.
 	// It exposes the `body` template slot.
 	html.Page `tmpl:"page"` // <- name the template, so it can be used as a target
 
-	// Emails is a list of emails to display in the inbox.
-	Emails []*model.Email
+	EmailList `tmpl:"email-list"`
 
 	// Current is the currently selected email.
 	Current *model.Email
@@ -44,17 +52,27 @@ var _ interface {
 } = &RouteModule{}
 
 func (rm *RouteModule) Load(req *http.Request) (any, error) {
-	emails, err := rm.SmtpService.FindEmails(req.Context(), &model.FindEmailQuery{
-		Query: model.Query{
-			Limit: 1,
-		},
-	})
+	var current *model.Email
+	var emailId string = torque.RouteParam(req, "emailId")
+
+	query, err := torque.DecodeQuery[model.FindEmailQuery](req)
+	if err != nil || query == nil {
+		return nil, err
+	}
+
+	current, err = rm.SmtpService.GetEmailByID(req.Context(), emailId)
+	if err != nil {
+		return nil, err
+	}
+
+	emails, err := rm.SmtpService.FindEmails(req.Context(), query)
 	if err != nil {
 		return nil, err
 	}
 
 	return &LoaderData{
-		Emails: emails,
+		Emails:  emails,
+		Current: current,
 	}, nil
 }
 
@@ -66,14 +84,8 @@ type LoaderData struct {
 func (rm *RouteModule) Render(wr http.ResponseWriter, req *http.Request, ld any) error {
 	loaderData := ld.(*LoaderData)
 
-	if len(loaderData.Emails) == 1 {
-		http.Redirect(wr, req, "/"+loaderData.Emails[0].ID.Hex(), http.StatusFound)
-		return nil
-	}
-
-	// TODO: Render no data state instead
 	return Template.Render(wr,
-		&LandingPage{
+		&InboxPage{
 			Page: html.Page{
 				TitlePrefix: "Welcome",
 				Title:       "create-torque-app",
@@ -84,10 +96,10 @@ func (rm *RouteModule) Render(wr http.ResponseWriter, req *http.Request, ld any)
 					{Src: "https://unpkg.com/htmx.org@1.9.6"},
 				},
 			},
-			Emails:  loaderData.Emails,
-			Current: loaderData.Current,
+			EmailList: EmailList{Emails: loaderData.Emails, Current: loaderData.Current},
+			Current:   loaderData.Current,
 		},
-		tmpl.WithName("body"),   // <- assign the landing page template to the `body` slot
-		tmpl.WithTarget("page"), // <- render the `page` template, which contains the `body`
+		tmpl.WithName("body"),
+		tmpl.WithTarget("page"),
 	)
 }

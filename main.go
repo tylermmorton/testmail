@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"embed"
+	"github.com/tylermmorton/testmail/app/routes/inbox"
 	"github.com/tylermmorton/testmail/app/routes/landing"
 	"github.com/tylermmorton/testmail/app/services/smtp"
 	"github.com/tylermmorton/torque"
@@ -16,7 +17,7 @@ import (
 )
 
 //go install github.com/tylermmorton/tmpl/cmd/tmpl@latest
-//go:generate tmpl bind ./...
+//go:generate tmpl bind ./... --mode=embed
 
 //go:embed .build/assets
 var embeddedAssets embed.FS
@@ -42,6 +43,7 @@ func main() {
 
 	r := torque.NewRouter(
 		torque.WithRouteModule("/", &landing.RouteModule{SmtpService: smtpService}),
+		torque.WithRouteModule("/{emailId}", &inbox.RouteModule{SmtpService: smtpService}),
 		torque.WithFileSystemServer("/s", staticAssets),
 	)
 	go func(wg *sync.WaitGroup) {

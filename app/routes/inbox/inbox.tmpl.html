@@ -1,0 +1,53 @@
+{{- /* gotype:github.com/tylermmorton/testmail/app/routes/inbox.InboxPage */ -}}
+<div class="flex h-full w-full flex-row">
+  <div class="flex w-1/4 flex-col space-y-4 bg-slate-50 p-8 shadow-md">
+    <a
+      href="/"
+      class="flex w-fit flex-row items-end space-x-1 p-1 text-3xl font-semibold text-black hover:cursor-pointer"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-8 w-8"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M3 7h3" class="text-green-500"></path>
+        <path d="M3 11h2" class="text-green-500"></path>
+        <path
+          d="M9.02 8.801l-.6 6a2 2 0 0 0 1.99 2.199h7.98a2 2 0 0 0 1.99 -1.801l.6 -6a2 2 0 0 0 -1.99 -2.199h-7.98a2 2 0 0 0 -1.99 1.801z"
+        ></path>
+        <path d="M9.8 7.5l2.982 3.28a3 3 0 0 0 4.238 .202l3.28 -2.982"></path>
+      </svg>
+      <h1>test<span class="text-green-500">mail</span></h1>
+    </a>
+
+    <form id="search-box" class="flex w-full flex-col space-y-2 p-2">
+      <label for="search-input" class="text-lg font-bold">Search inbox</label>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Subject, email address, or body text..."
+        class="bg-white p-2"
+      />
+    </form>
+
+    <nav class="flex flex-col space-y-2">
+      {{ template "email-list" .EmailList }}
+    </nav>
+  </div>
+
+  <main class="flex w-full items-center justify-center bg-slate-100 p-8">
+    <div class="min-h-[60ch] w-full max-w-3xl rounded-lg bg-slate-50 shadow-xl">
+      {{ if ne .Current nil }}
+        {{ html .Current.Body }}
+      {{ end }}
+    </div>
+  </main>
+</div>
