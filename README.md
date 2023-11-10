@@ -1,12 +1,18 @@
 # testmail
 
-`testmail` is a drop-in replacement for your production SMTP server that you can run in your local development environment. It catches all emails sent by your application and allows you to inspect them in a web interface.
+`testmail` is a drop-in replacement for your production SMTP server that you can run in your local development environment. It catches all emails sent by your application and allows you to inspect them in a web interface. This is useful for testing end-to-end flows that involve sending and opening emails. To that end, testmail also provides crawler interfaces for [go-rod]() and Cypress to help get your email tests up and running quickly.
 
 ## Features
 - [x] SMTP server that catches all emails and stores them in a mongodb collection
-- [ ] Web interface for viewing emails
-- [ ] Docker image for easy deployment
+- [x] Web interface for viewing and managing emails received by testmail
+- [x] Docker image for easy deployment and integration into your testing stack
 - [ ] go-rod & cypress integrations for driving automated testing
+
+## Secondary Objectives
+
+`testmail` is not only a useful development tool, but also an experiment in building a hypermedia-based web application in Go using the [torque](https://lbft.dev) framework. This project is meant to dogfood the framework and provide examples of how to build interactive pages when using torque with [htmx](https://htmx.org/).
+
+The project is open to contributions and feedback, so feel free to open an issue or PR if you have any suggestions!
 
 ## The Stack
 This project was generated from the `create-torque-app` template and is using the following technologies:
