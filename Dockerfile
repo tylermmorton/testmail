@@ -45,7 +45,6 @@ RUN go install github.com/tylermmorton/tmpl/cmd/tmpl@latest
 FROM go-install as go-build
 WORKDIR /src
 COPY ./main.go ./
-COPY ./pkg ./pkg
 COPY ./app/model ./app/model
 COPY ./app/routes/ ./app/routes/
 COPY ./app/services/ ./app/services/
