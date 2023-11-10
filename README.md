@@ -1,3 +1,5 @@
+[![Build status](https://github.com/tylermmorton/testmail/actions/workflows/image.yaml/badge.svg?branch=main&event=push)](https://github.com/tylermmorton/testmail/actions/workflows/image.yaml)
+
 # testmail
 
 `testmail` is a drop-in replacement for your production SMTP server that you can run in your local development environment. It catches all emails sent by your application and allows you to inspect them in a web interface. This is useful for testing end-to-end flows that involve sending and opening emails. To that end, testmail also provides crawler interfaces for [go-rod]() and Cypress to help get your email tests up and running quickly.
