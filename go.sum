@@ -22,10 +22,16 @@ github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe h1:iruDEfMl2E6f
 github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe/go.mod h1:wL8QJuTMNUDYhXwkmfOly8iTdp5TEcJFWZD2D7SIkUc=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/tylermmorton/eventbus v0.0.0-20230712194657-6056b55ae9a9 h1:gvYv9MikB4Lk4JGKZnS57gVXO+rqQuDJ3KLp8inIAKw=
+github.com/tylermmorton/eventbus v0.0.0-20230712194657-6056b55ae9a9/go.mod h1:hCFTAo2JFZnVw51AXmYeCk2q1NPdFetEB8pxUnwIKbw=
 github.com/tylermmorton/tmpl v0.0.0-20231025031313-5552ee818c6d h1:DZ25KkbqQMYQE9Dk5x4WMJlBg39HSOn0HIn0t6cCSjI=
 github.com/tylermmorton/tmpl v0.0.0-20231025031313-5552ee818c6d/go.mod h1:aFT85F39qRY7ZZT5pHU01s1Ru3o9EOmbd+UjbrxxHw4=
 github.com/tylermmorton/torque v1.0.0 h1:ATU6mYtu8BtuXgVJ+DQbLItB7Py2slcAwxa2paag7E0=
 github.com/tylermmorton/torque v1.0.0/go.mod h1:UBQozLka8QLkeGCiVpTSufiid7NCwi3LJkjSKZ5Pz+0=
+github.com/tylermmorton/torque v1.0.1-0.20231102011111-370226dfb839 h1:F13OrY26Xg8S/UU56pThByzF4rdhZclgmVWAVR5USJQ=
+github.com/tylermmorton/torque v1.0.1-0.20231102011111-370226dfb839/go.mod h1:UBQozLka8QLkeGCiVpTSufiid7NCwi3LJkjSKZ5Pz+0=
+github.com/tylermmorton/torque v1.1.0 h1:j5POp7EmeotjSGO9B8InRSOOEijMI2HC2OM2sOCj5+Q=
+github.com/tylermmorton/torque v1.1.0/go.mod h1:UBQozLka8QLkeGCiVpTSufiid7NCwi3LJkjSKZ5Pz+0=
 github.com/xdg-go/pbkdf2 v1.0.0 h1:Su7DPu48wXMwC3bs7MCNG+z4FhcyEuz5dlvchbq0B0c=
 github.com/xdg-go/pbkdf2 v1.0.0/go.mod h1:jrpuAogTd400dnrH08LKmI/xc1MbPOebTwRqcT5RDeI=
 github.com/xdg-go/scram v1.1.2 h1:FHX5I5B4i4hKRVRBCFRxq1iQRej7WO3hhBuJf+UUySY=

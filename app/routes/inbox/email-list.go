@@ -3,7 +3,22 @@ package inbox
 import (
 	"fmt"
 	"github.com/tylermmorton/testmail/app/model"
+	"github.com/tylermmorton/tmpl"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strings"
 	"time"
+)
+
+var (
+	EmailListTemplate = tmpl.MustCompile(&EmailList{}, tmpl.UseFuncs(tmpl.FuncMap{
+		"hex": func(id primitive.ObjectID) string {
+			return id.Hex()
+		},
+		"join": func(strs []string) string {
+			return strings.Join(strs, ", ")
+		},
+		"formatTimeSince": formatTimeSince,
+	}))
 )
 
 //tmpl:bind email-list.tmpl.html

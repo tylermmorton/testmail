@@ -1,31 +1,34 @@
 {{- /* gotype:github.com/tylermmorton/testmail/app/routes/inbox.EmailList*/ -}}
-<nav class="flex flex-col space-y-2 overflow-y-scroll pr-2 no-scrollbar">
-  {{ range .Emails }}
-    <div class="border-1 w-full border-gray-500 bg-white">
-      <a
-        href="/{{ hex .ID }}"
-        class="flex h-full cursor-pointer flex-row items-center space-x-4 rounded-md px-4 shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-black"
-      >
-        <div class="flex grow flex-col items-start p-3">
-          <div class="flex flex-row items-end space-x-1  text-sm">
-            <div class="shrink truncate font-semibold">
-              {{ .Subject }}
-            </div>
-            <span>&bull;</span>
-            <div class="text-gray-500">
-              {{ formatTimeSince .CreatedAt }}
-            </div>
+{{ range .Emails }}
+  <div class="border-1 w-full border-gray-500 bg-white">
+    <a
+      href="/{{ hex .ID }}"
+      class="flex h-full cursor-pointer flex-row items-center space-x-4 rounded-md px-4 shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-black"
+      hx-boost="true"
+      hx-get="/{{ hex .ID }}"
+      hx-swap="innerHTML"
+      hx-target="#email-view"
+      hx-push-url="/{{ hex .ID }}"
+    >
+      <div class="flex grow flex-col items-start p-3">
+        <div class="flex flex-row items-end space-x-1  text-sm">
+          <div class="shrink truncate font-semibold">
+            {{ .Subject }}
           </div>
-          <div class="truncate text-xs italic text-gray-700">
-            To
-            {{ join .To }}
-          </div>
-          <div class="truncate text-xs italic text-gray-700">
-            From
-            {{ .From }}
+          <span>&bull;</span>
+          <div class="text-gray-500">
+            {{ formatTimeSince .CreatedAt }}
           </div>
         </div>
-      </a>
-    </div>
-  {{ end }}
-</nav>
+        <div class="truncate text-xs italic text-gray-700">
+          To
+          {{ join .To }}
+        </div>
+        <div class="truncate text-xs italic text-gray-700">
+          From
+          {{ .From }}
+        </div>
+      </div>
+    </a>
+  </div>
+{{ end }}

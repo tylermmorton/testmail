@@ -16,7 +16,7 @@ tasks:
 
   build:css:
     cmds:
-      - npx tailwindcss build -i app/styles/tailwind.css -o app/.build/assets/app.css
+      - npx tailwindcss build -i app/styles/tailwind.css -o .build/assets/app.css
 
   watch:css:
     cmds:

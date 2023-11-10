@@ -35,6 +35,13 @@ func (t *EmailList) TemplateText() string {
 	return _tmpl(EmailListTmplFS, ".")
 }
 
+//go:embed email-view.tmpl.html
+var EmailViewTmplFS embed.FS
+
+func (t *EmailView) TemplateText() string {
+	return _tmpl(EmailViewTmplFS, ".")
+}
+
 //go:embed inbox.tmpl.html
 var InboxPageTmplFS embed.FS
 

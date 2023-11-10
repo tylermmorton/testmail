@@ -1,0 +1,68 @@
+{{- /* gotype:github.com/tylermmorton/testmail/app/routes/inbox.EmailView*/ -}}
+
+
+<div class="flex w-full flex-col items-center justify-center bg-gray-100 p-8">
+  <header
+    id="email-header"
+    class="flex w-full max-w-3xl items-center justify-center border-b border-b-gray-200 bg-gray-50 shadow-sm"
+  >
+    <form action="/{{ hex .Current.ID }}" method="post" class="flex w-full flex-row items-center justify-between p-6">
+      <div class="flex flex-col space-y-1">
+        <span class="text-sm font-bold text-gray-800"
+          >{{ .Current.Subject }}</span
+        >
+        <span class="text-sm text-gray-600">From {{ .Current.From }}</span>
+        <span class="text-xs text-gray-400">{{ .Current.CreatedAt }}</span>
+      </div>
+      <button type="submit" name="action" value="delete" class="flex flex-row items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 cursor-pointer text-gray-800"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M4 7l16 0"></path>
+          <path d="M10 11l0 6"></path>
+          <path d="M14 11l0 6"></path>
+          <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
+          <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
+        </svg>
+      </button>
+    </form>
+  </header>
+  <div class="w-full max-w-3xl bg-gray-50 shadow-xl">
+    {{ if ne .Current nil }}
+      {{ html .Current.Body }}
+    {{ end }}
+  </div>
+</div>
+
+<div
+  id="detail-panel"
+  class="flex w-1/3 flex-col space-y-4 bg-gray-50 p-8 shadow-md"
+>
+  <h2 class="pt-[75px] text-lg font-bold">Email details</h2>
+  <table class="w-full border-spacing-2 truncate  text-left font-mono text-sm">
+    <thead>
+      <tr>
+        <th class="">Header</th>
+        <th class="px-2">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range $key, $value := .Current.Headers }}
+        <tr>
+          <td class="truncate pt-3">{{ $key }}</td>
+          <td class="truncate px-2 pt-3">{{ $value }}</td>
+        </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>

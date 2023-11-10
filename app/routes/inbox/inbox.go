@@ -6,6 +6,7 @@ import (
 	"github.com/tylermmorton/testmail/app/templates/html"
 	"github.com/tylermmorton/tmpl"
 	"github.com/tylermmorton/torque"
+	"github.com/tylermmorton/torque/pkg/htmx"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"html/template"
 	"net/http"
@@ -35,7 +36,8 @@ type InboxPage struct {
 	// It exposes the `body` template slot.
 	html.Page `tmpl:"page"` // <- name the template, so it can be used as a target
 
-	EmailList `tmpl:"email-list"`
+	EmailList EmailList `tmpl:"email-list"`
+	EmailView EmailView `tmpl:"email-view"`
 
 	// Current is the currently selected email.
 	Current *model.Email
@@ -47,9 +49,29 @@ type RouteModule struct {
 }
 
 var _ interface {
+	torque.Action
 	torque.Loader
 	torque.Renderer
+	torque.EventSource
 } = &RouteModule{}
+
+func (rm *RouteModule) Action(wr http.ResponseWriter, req *http.Request) error {
+	action := torque.DecodeFormAction(req)
+	switch action {
+	case "delete":
+		emailId := torque.RouteParam(req, "emailId")
+
+		err := rm.SmtpService.DeleteEmailByID(req.Context(), emailId)
+		if err != nil {
+			return err
+		}
+
+		http.Redirect(wr, req, "/", http.StatusFound)
+		return nil
+	}
+
+	return nil
+}
 
 func (rm *RouteModule) Load(req *http.Request) (any, error) {
 	var current *model.Email
@@ -84,22 +106,73 @@ type LoaderData struct {
 func (rm *RouteModule) Render(wr http.ResponseWriter, req *http.Request, ld any) error {
 	loaderData := ld.(*LoaderData)
 
-	return Template.Render(wr,
-		&InboxPage{
-			Page: html.Page{
-				TitlePrefix: "Welcome",
-				Title:       "create-torque-app",
-				Links: []html.Link{
-					{Rel: "stylesheet", Href: "/s/app.css"},
-				},
-				Scripts: []html.Script{
-					{Src: "https://unpkg.com/htmx.org@1.9.6"},
-				},
-			},
-			EmailList: EmailList{Emails: loaderData.Emails, Current: loaderData.Current},
-			Current:   loaderData.Current,
+	return torque.VaryRender(wr, req, htmx.HxRequestHeader, map[any]torque.RenderFn{
+		"true": func(wr http.ResponseWriter, req *http.Request) error {
+			return Template.Render(wr, &InboxPage{
+				Current:   loaderData.Current,
+				EmailView: EmailView{Current: loaderData.Current},
+			}, tmpl.WithTarget("email-view"))
 		},
-		tmpl.WithName("body"),
-		tmpl.WithTarget("page"),
-	)
+
+		torque.VaryDefault: func(wr http.ResponseWriter, req *http.Request) error {
+			return Template.Render(wr,
+				&InboxPage{
+					Page: html.Page{
+						TitlePrefix: "Welcome",
+						Title:       "create-torque-app",
+						Links: []html.Link{
+							{Rel: "stylesheet", Href: "/s/app.css"},
+						},
+						Scripts: []html.Script{
+							{Src: "https://unpkg.com/htmx.org@1.9.6"},
+							{Src: "https://unpkg.com/htmx.org/dist/ext/sse.js"},
+						},
+					},
+					EmailList: EmailList{Emails: loaderData.Emails, Current: loaderData.Current},
+					EmailView: EmailView{Current: loaderData.Current},
+					Current:   loaderData.Current,
+				},
+				tmpl.WithName("body"),
+				tmpl.WithTarget("page"),
+			)
+		},
+	})
+}
+
+func (rm *RouteModule) Subscribe(wr http.ResponseWriter, req *http.Request) error {
+	return htmx.SSE(wr, req, htmx.EventSourceMap{
+		"email-created": func(sse chan string) {
+			ch, err := rm.SmtpService.WatchEmails(req.Context())
+			if err != nil {
+				panic(err)
+			}
+
+			for {
+				select {
+				case <-req.Context().Done():
+					// the text/event-stream connection was closed
+					// unsubscribe from real time updates for messages
+					return
+
+				case _, ok := <-ch:
+					if !ok {
+						return
+					}
+
+					loaderData, err := rm.Load(req)
+					if err != nil {
+						panic(err)
+					}
+
+					err = EmailListTemplate.RenderToChan(sse, &EmailList{
+						Current: loaderData.(*LoaderData).Current,
+						Emails:  loaderData.(*LoaderData).Emails,
+					})
+					if err != nil {
+						panic(err)
+					}
+				}
+			}
+		},
+	})
 }
