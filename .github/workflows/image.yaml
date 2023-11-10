@@ -5,7 +5,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: testmail
+  IMAGE_NAME: testmail/testmail
   IMAGE_REGISTRY: ghcr.io
 
 jobs:
