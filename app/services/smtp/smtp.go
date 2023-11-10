@@ -2,12 +2,12 @@ package smtp
 
 import (
 	"context"
+	"github.com/256dpi/lungo"
 	"github.com/emersion/go-smtp"
 	"github.com/tylermmorton/eventbus"
 	"github.com/tylermmorton/testmail/app/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"time"
@@ -27,8 +27,7 @@ type Service interface {
 	WatchEmails(ctx context.Context) (<-chan *model.Email, error)
 }
 
-func New(db *mongo.Database) Service {
-	// TODO: implement mongodb index creation
+func New(db lungo.IDatabase) Service {
 	return &baseLayer{
 		emails:       db.Collection(emailsCollection),
 		emailCreated: eventbus.New[string, *model.Email](),
@@ -36,7 +35,7 @@ func New(db *mongo.Database) Service {
 }
 
 type baseLayer struct {
-	emails       *mongo.Collection
+	emails       lungo.ICollection
 	emailCreated eventbus.EventBus[string, *model.Email]
 }
 

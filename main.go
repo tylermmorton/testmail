@@ -3,12 +3,11 @@ package main
 import (
 	"context"
 	"embed"
+	"github.com/256dpi/lungo"
 	"github.com/tylermmorton/testmail/app/routes/inbox"
 	"github.com/tylermmorton/testmail/app/routes/landing"
 	"github.com/tylermmorton/testmail/app/services/smtp"
 	"github.com/tylermmorton/torque"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"io/fs"
 	"log"
 	"net/http"
@@ -29,12 +28,17 @@ func main() {
 		log.Fatalf("failed to create static assets filesystem: %+v", err)
 	}
 
+	opts := lungo.Options{
+		Store:          lungo.NewFileStore(".lungo/testmail.db", 0777),
+		ExpireInterval: 0,
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	mongoClient, engine, err := lungo.Open(ctx, opts)
 	if err != nil {
-		log.Fatalf("failed to connect to mongodb: %+v", err)
+		log.Fatalf("failed to open lungo in-memory database: %+v", err)
 	}
+	defer engine.Close()
 
 	db := mongoClient.Database("testmail")
 

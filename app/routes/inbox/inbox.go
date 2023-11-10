@@ -9,6 +9,7 @@ import (
 	"github.com/tylermmorton/torque/pkg/htmx"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"html/template"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -161,7 +162,7 @@ func (rm *RouteModule) Subscribe(wr http.ResponseWriter, req *http.Request) erro
 
 					loaderData, err := rm.Load(req)
 					if err != nil {
-						panic(err)
+						log.Printf("failed to load emails: %v", err)
 					}
 
 					err = EmailListTemplate.RenderToChan(sse, &EmailList{
@@ -169,7 +170,7 @@ func (rm *RouteModule) Subscribe(wr http.ResponseWriter, req *http.Request) erro
 						Emails:  loaderData.(*LoaderData).Emails,
 					})
 					if err != nil {
-						panic(err)
+						log.Printf("failed to render email list: %v", err)
 					}
 				}
 			}
