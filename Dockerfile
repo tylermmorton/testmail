@@ -64,10 +64,6 @@ RUN chmod +x ./.build/bin/testmail
 RUN ls -la ./.build
 RUN ls -la ./.build/bin
 
-#FROM go-build as go-test
-#WORKDIR /src
-#RUN task test
-
 FROM ubuntu:latest as prod
 COPY --from=go-build /src/.build/bin/testmail /bin/app
 
