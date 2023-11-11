@@ -11,6 +11,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 )
@@ -28,8 +29,14 @@ func main() {
 		log.Fatalf("failed to create static assets filesystem: %+v", err)
 	}
 
+	fsPath := os.Getenv("LUNGO_FILESTORE_DIR")
+	if len(fsPath) == 0 {
+		fsPath = ".lungo"
+	}
+	log.Printf("[testmail] using %s to store embedded mongodb", fsPath)
+
 	opts := lungo.Options{
-		Store:          lungo.NewFileStore(".lungo/testmail.db", 0777),
+		Store:          lungo.NewFileStore(fsPath+"testmail.db", 0777),
 		ExpireInterval: 0,
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

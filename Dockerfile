@@ -66,5 +66,7 @@ RUN ls -la ./.build/bin
 FROM ubuntu:latest as prod
 COPY --from=go-build /src/.build/bin/testmail /bin/app
 
+ENV LUNGO_FILESTORE_DIR=/tmp/lungo
+
 EXPOSE 8080 1025
 ENTRYPOINT [ "/bin/app" ]
